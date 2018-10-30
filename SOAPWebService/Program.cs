@@ -9,6 +9,8 @@ namespace SOAPWebService
 {
     class Program
     {
+        public static PolicyVersion PolicyVersion { get; private set; }
+
         static void Main(string[] args)
         {
             if(Debugger.IsAttached)
@@ -26,15 +28,15 @@ namespace SOAPWebService
                 {
                     HttpGetEnabled = true,
                     HttpGetUrl = baseAddress,
-                    MetadataExporter = {PolicyVersion = PolicyVersion.Policy15}
+                    MetadataExporter = { PolicyVersion = PolicyVersion.Policy15 }
                 };
                 host.Description.Behaviors.Add(metadataBehavior);
             }
             
             Binding mexBinding = MetadataExchangeBindings.CreateMexHttpBinding();
             host.AddServiceEndpoint(typeof(IMetadataExchange), mexBinding, "mex");
-            Binding wsBinding = new WSHttpBinding();
-            host.AddServiceEndpoint(typeof(IMyService), wsBinding, "");
+            Binding httpBinding = new BasicHttpBinding();
+            host.AddServiceEndpoint(typeof(IMyService), httpBinding, "");
             host.Open();
 
             Console.WriteLine("Service on. Press any key to close..."); 
