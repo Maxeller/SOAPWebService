@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
 using System.ServiceModel;
@@ -21,6 +22,7 @@ namespace SOAPWebService
             Uri baseAddress = new Uri("http://localhost:8888/myservice/");
             ServiceHost host = new ServiceHost(typeof(MyService), baseAddress);
             
+            
             ServiceMetadataBehavior metadataBehavior = host.Description.Behaviors.Find<ServiceMetadataBehavior>();
             if (metadataBehavior == null)
             {
@@ -35,12 +37,13 @@ namespace SOAPWebService
             
             Binding mexBinding = MetadataExchangeBindings.CreateMexHttpBinding();
             host.AddServiceEndpoint(typeof(IMetadataExchange), mexBinding, "mex");
-            Binding httpBinding = new BasicHttpBinding();
+            Binding httpBinding = new BasicHttpBinding(); //WSHttpBinding doesn't work with SOAPUI
+            httpBinding.Namespace = "4it475.vse.cz";
             host.AddServiceEndpoint(typeof(IMyService), httpBinding, "");
             host.Open();
 
-            Console.WriteLine("Service on. Press any key to close..."); 
-            Console.ReadKey();
+            Console.WriteLine("Service on. Press Enter key to close..."); 
+            Console.ReadLine();
             host.Close();
         }
     }

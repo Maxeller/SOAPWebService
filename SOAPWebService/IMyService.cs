@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SOAPWebService
 {
-    [ServiceContract]
+    [ServiceContract(Namespace = "4it475.vse.cz")]
     public interface IMyService
     {
         [OperationContract]
@@ -15,5 +15,11 @@ namespace SOAPWebService
 
         [OperationContract]
         int Increment(int i);
+
+        [OperationContract(Name = "GetTestPerson")]
+        Person GetPerson();
+
+        [OperationContract]
+        Person GetPerson(string name, string position);
     }
 }
