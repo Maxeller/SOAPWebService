@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CnbRatesClient.cs" />
     <Compile Include="IMyService.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="Program.cs" />

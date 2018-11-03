@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SOAPWebService
 {
@@ -21,5 +22,8 @@ namespace SOAPWebService
 
         [OperationContract]
         Person GetPerson(string name, string position);
+
+        [OperationContract]
+        Task<decimal> GetExchange(string from, string to, int amount);
     }
 }
