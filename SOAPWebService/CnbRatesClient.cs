@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.Linq;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace SOAPWebService {
     public static class CnbRatesClient {
@@ -15,17 +14,22 @@ namespace SOAPWebService {
         public static async Task<DataTable> GetRatesAsync() {
             using (var wc = new WebClient()) {
                 wc.Encoding = Encoding.UTF8;
-                var dataString = await wc.DownloadStringTaskAsync(API_URL);
-                return Parse(dataString);
+                try {
+                    var dataString = await wc.DownloadStringTaskAsync(API_URL);
+                    return Parse(dataString);
+                } catch (Exception) { //Pokud jakákoliv vyjímka, tak vracíme null, tzn. nepodařilo se získat data pro konverzi
+                    return null;
+                }
             }
         }
 
         private static DataTable Parse(string rateString) {
-            //TODO: Proper exception handling
             var rates = new DataTable();
 
             rates.Columns.Add("Code", typeof(string));
             rates.Columns.Add("Rate", typeof(decimal));
+
+            rates.Rows.Add("CZK", 1);
 
             foreach (var line in rateString.SplitLines()) {
                 var data = line.Split('|');

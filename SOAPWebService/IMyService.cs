@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace SOAPWebService
-{
+namespace SOAPWebService {
     [ServiceContract(Namespace = "4it475.vse.cz")]
     public interface IMyService
     {
@@ -24,6 +19,8 @@ namespace SOAPWebService
         Person GetPerson(string name, string position);
 
         [OperationContract]
+        [FaultContract(typeof(NotImplementedException))]
+        [FaultContract(typeof(OperationCanceledException))]
         Task<decimal> GetExchange(string from, string to, int amount);
     }
 }

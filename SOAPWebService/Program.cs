@@ -1,13 +1,11 @@
 ﻿using System;
-using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 
-namespace SOAPWebService
-{
+namespace SOAPWebService {
     class Program
     {
         public static PolicyVersion PolicyVersion { get; private set; }
