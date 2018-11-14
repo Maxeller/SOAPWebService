@@ -8,8 +8,6 @@ using System.ServiceModel.Description;
 namespace SOAPWebService {
     class Program
     {
-        public static PolicyVersion PolicyVersion { get; private set; }
-
         static void Main(string[] args)
         {
             if(Debugger.IsAttached)
@@ -19,7 +17,6 @@ namespace SOAPWebService {
 
             Uri baseAddress = new Uri("http://localhost:8888/myservice/");
             ServiceHost host = new ServiceHost(typeof(MyService), baseAddress);
-            
             
             ServiceMetadataBehavior metadataBehavior = host.Description.Behaviors.Find<ServiceMetadataBehavior>();
             if (metadataBehavior == null)
@@ -32,7 +29,7 @@ namespace SOAPWebService {
                 };
                 host.Description.Behaviors.Add(metadataBehavior);
             }
-            
+
             Binding mexBinding = MetadataExchangeBindings.CreateMexHttpBinding();
             host.AddServiceEndpoint(typeof(IMetadataExchange), mexBinding, "mex");
             Binding httpBinding = new BasicHttpBinding(); //WSHttpBinding doesn't work with SOAPUI

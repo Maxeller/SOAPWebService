@@ -20,7 +20,7 @@ namespace SOAPWebService {
 
         public Person GetPerson()
         {
-            return new Person("Test Person", "Test Position");
+            return new Person("Test", "Position");
         }
 
         public Person GetPerson(string name, string position)

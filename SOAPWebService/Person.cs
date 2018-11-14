@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 
 namespace SOAPWebService
 {
     [DataContract]
     public class Person
     {
-        [DataMember]
-        public string Name { get; }
-        [DataMember]
-        public string Position { get; }
+        [DataMember] public string Name { get; set; }
+        [DataMember] public string Position { get; set; }
+
+        public Person()
+        {
+
+        }
 
         public Person(string name, string position)
         {
             Name = name;
             Position = position;
         }
-
     }
 }
