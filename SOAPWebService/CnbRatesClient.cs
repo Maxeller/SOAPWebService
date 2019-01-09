@@ -9,47 +9,47 @@ using System.Threading.Tasks;
 
 namespace SOAPWebService {
     /// <summary>
-    /// Třída pro získávání kurzu CZK vůči dalším měnám
+    /// Simple rate retrieving client
     /// </summary>
     public static class CnbRatesClient {
-        //URL pro API České národní banky
+        //API URL for Czech National Bank
         private const string API_URL = @"http://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt";
 
         /// <summary>
-        /// Metoda pro asynchronní získání kurzů
+        /// Asynchronous method for retrieving rates
         /// </summary>
-        /// <returns>Datová tabulka kurzů</returns>
+        /// <returns>Rate datatable</returns>
         public static async Task<DataTable> GetRatesAsync() {
             using (var wc = new WebClient()) {
                 wc.Encoding = Encoding.UTF8;
                 try {
                     var dataString = await wc.DownloadStringTaskAsync(API_URL);
                     return Parse(dataString);
-                } catch (Exception) { //Pokud jakákoliv vyjímka, tak vracíme null, tzn. nepodařilo se získat data pro konverzi
+                } catch (Exception) { //If there is any exception, data for conversion have not been retrieved
                     return null;
                 }
             }
         }
 
         /// <summary>
-        /// Metoda pro získání datové tabulky z textového výstupu API České národní banky
+        /// Method for retrieving data from CNB API
         /// </summary>
-        /// <param name="rateString">Textový soubor s kurzy</param>
-        /// <returns>Datová tabulka z vybranými kurzy</returns>
+        /// <param name="rateString">Text file with rates</param>
+        /// <returns>Datatable with selected rates</returns>
         private static DataTable Parse(string rateString) {
-            var rates = new DataTable();                            //Vytvoření datové tabulky
+            var rates = new DataTable();                            //Datatable initialization
 
-            rates.Columns.Add("Code", typeof(string));              //Přidání sloupců
+            rates.Columns.Add("Code", typeof(string));              //Column initialization, creating headers
             rates.Columns.Add("Rate", typeof(decimal));
 
-            rates.Rows.Add("CZK", 1);                               //Záznam pro CZK, převod CZK - CZK má kurz 1
+            rates.Rows.Add("CZK", 1);                               //CZK to CZK rate is 1
 
-            foreach (var line in rateString.SplitLines()) {         //Volání řádků po jednom
-                var data = line.Split('|');                         //Rozdělení rádku
-                var code = data[3];                                 //Získání kódu měny
-                var rate = data[4];                                 //Získání kurzu
-                if (code == "EUR" || code == "USD" || code == "GBP") {  //Vyběr měn
-                    rates.Rows.Add(code, decimal.Parse(rate, CultureInfo.GetCultureInfo("cs-CZ")));     //Přidání záznamu do tabulky
+            foreach (var line in rateString.SplitLines()) {         //Using SplitLines method to iterate over the text file
+                var data = line.Split('|');                         //Spliting data in current line
+                var code = data[3];                                 //Currency code
+                var rate = data[4];                                 //Rate
+                if (code == "EUR" || code == "USD" || code == "GBP") {  //Currency restriction, for testing purposes mainly
+                    rates.Rows.Add(code, decimal.Parse(rate, CultureInfo.GetCultureInfo("cs-CZ")));     //Adding selected rate to the datatable
                 }
             }
 
@@ -57,24 +57,24 @@ namespace SOAPWebService {
         }
 
         /// <summary>
-        /// Pomocná metoda pro načítání řádků, postupně iteruje přes řádky a vrací jeden za druhým
+        /// Method for iterating over text file
         /// </summary>
-        /// <param name="input">Text s kurzy</param>
-        /// <returns>Řádek z textu</returns>
+        /// <param name="input">Text file with rates</param>
+        /// <returns>Line from the text file</returns>
         private static IEnumerable<string> SplitLines(this string input) {
-            if (input == null) {                                    //Vstup je prázdný, přerušuje se iterace
+            if (input == null) {                                    //Input is empty, interrupting iteration
                 yield break;
             }
 
-            using (var reader = new StringReader(input)) {          //K procházení textu je použit StringReader
+            using (var reader = new StringReader(input)) {          //Using StringReader for reading the text file
                 string line;
                 var i = 1;
-                while ((line = reader.ReadLine()) != null) {        //Iterace dokud zbývá text
-                    if (!(i > 2)) {                                 //Přeskočení hlavičky
+                while ((line = reader.ReadLine()) != null) {        //Iterate until there is text left
+                    if (!(i > 2)) {                                 //Skip header
                         i++;
                         continue;
                     }
-                    yield return line;                              //Vrácení řádku
+                    yield return line;                              //Return current line
                 }
             }
         }
